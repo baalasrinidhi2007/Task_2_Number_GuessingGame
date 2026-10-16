@@ -1,0 +1,158 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Number Guessing Game</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      padding: 20px;
+    }
+
+    .game {
+      width: 100%;
+      max-width: 430px;
+      padding: 30px;
+      text-align: center;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    h1 {
+      color: #563d9b;
+      margin-top: 0;
+    }
+
+    p {
+      color: #555;
+      line-height: 1.5;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px;
+      margin: 12px 0;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      font-size: 17px;
+      text-align: center;
+    }
+
+    button {
+      padding: 12px 18px;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      background: #6741d9;
+      font-size: 16px;
+      cursor: pointer;
+      margin: 5px;
+    }
+
+    button:hover {
+      background: #4f2db0;
+    }
+
+    #message {
+      min-height: 28px;
+      font-weight: bold;
+      margin-top: 18px;
+    }
+
+    .stats {
+      margin-top: 15px;
+      color: #444;
+    }
+  </style>
+</head>
+<body>
+  <main class="game">
+    <h1>🎯 Number Guessing Game</h1>
+    <p>I'm thinking of a number between 1 and 100.</p>
+    <p>Can you guess it?</p>
+
+    <input
+      type="number"
+      id="guess"
+      min="1"
+      max="100"
+      placeholder="Enter your guess"
+      aria-label="Your guess"
+    >
+
+    <button onclick="checkGuess()">Submit Guess</button>
+    <button onclick="restartGame()">Play Again</button>
+
+    <div id="message" role="status" aria-live="polite">
+      Good luck! 🍀
+    </div>
+
+    <div class="stats">
+      Attempts: <span id="attempts">0</span>
+    </div>
+  </main>
+
+  <script>
+    let secretNumber;
+    let attempts;
+
+    function restartGame() {
+      secretNumber = Math.floor(Math.random() * 100) + 1;
+      attempts = 0;
+
+      document.getElementById("attempts").textContent = attempts;
+      document.getElementById("message").textContent =
+        "New game! Make your first guess. 🍀";
+      document.getElementById("guess").value = "";
+      document.getElementById("guess").disabled = false;
+    }
+
+    function checkGuess() {
+      const input = document.getElementById("guess");
+      const guess = Number(input.value);
+      const message = document.getElementById("message");
+
+      if (input.value.trim() === "" || !Number.isInteger(guess)
+          || guess < 1 || guess > 100) {
+        message.textContent = "Please enter a whole number from 1 to 100.";
+        return;
+      }
+
+      attempts++;
+      document.getElementById("attempts").textContent = attempts;
+
+      if (guess === secretNumber) {
+        message.textContent =
+          `🎉 Correct! You guessed it in ${attempts} attempt(s)!`;
+        input.disabled = true;
+      } else if (guess < secretNumber) {
+        message.textContent = "📉 Too low! Try a higher number.";
+      } else {
+        message.textContent = "📈 Too high! Try a lower number.";
+      }
+
+      input.value = "";
+      if (!input.disabled) input.focus();
+    }
+
+    document.getElementById("guess").addEventListener("keydown", function(event) {
+      if (event.key === "Enter") checkGuess();
+    });
+
+    restartGame();
+  </script>
+</body>
+</html>
